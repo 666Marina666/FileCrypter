@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using WebApplication1.Helpers;
 using System.Runtime.InteropServices.ComTypes;
 using RSACryptor;
+using WebApplication1.Models.RSA;
 
 
 namespace WebApplication1.Controllers
@@ -121,9 +122,15 @@ namespace WebApplication1.Controllers
 
                 using (var provider = new RSACrypt())
                 {
-
                     //TODO:read key from base
-                    //byte[] rsaKeyInstance = new byte[10];
+                //    RsaKeyPair rsaKeyPair = new RsaKeyPair
+                //    {
+                //        Id = new Guid(),
+                //        PublicKey = provider.ExportKey(false).GetBuffer(),
+                //        PrivateKey = provider.ExportKey(true).GetBuffer()
+                //};
+
+                //    var rsaKeyInstance = rsaKeyPair.PublicKey;
                     //provider.ImportKey(rsaKeyInstance.Length, rsaKeyInstance, true);
 
                     fileModel.Data = provider.Encrypt(fileModel.Data);
