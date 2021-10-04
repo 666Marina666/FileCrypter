@@ -12,6 +12,9 @@ using WebApplication1.Models;
 using WebApplication1.Models.File;
 using System.Security.Cryptography;
 using WebApplication1.Helpers;
+using System.Runtime.InteropServices.ComTypes;
+using RSACryptor;
+
 
 namespace WebApplication1.Controllers
 {
@@ -110,15 +113,25 @@ namespace WebApplication1.Controllers
                     Description = description
                 };
 
-                var crypter = new CryptoHelper();
-                crypter.GetPrivateKey_Method();
-                crypter.WritePublicKey();
-                crypter.CreateAsmKeys();
-
                 using (var dataStream = new MemoryStream())
                 {
                     await file.CopyToAsync(dataStream);
-                    fileModel.Data = crypter.EncryptBytes(dataStream.ToArray());
+                    fileModel.Data = dataStream.ToArray();
+                }
+
+                using (var provider = new RSACrypt())
+                {
+
+                    //TODO:read key from base
+                    //byte[] rsaKeyInstance = new byte[10];
+                    //provider.ImportKey(rsaKeyInstance.Length, rsaKeyInstance, true);
+
+                    fileModel.Data = provider.Encrypt(fileModel.Data);
+
+                    using (var key = provider.ExportKey(false))
+                    {
+                        var keyBuffer = key.GetBuffer();
+                    }
                 }
 
                 context.FilesOnDatabase.Add(fileModel);

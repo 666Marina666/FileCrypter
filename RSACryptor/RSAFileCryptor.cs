@@ -65,37 +65,6 @@ namespace RSACryptor
             }
         }
 
-        private static void SaveKeyData(RSACrypt provider, string path, DataTypeFlag saveInfoFlag)
-        {
-            using (var bw = new BinaryWriter(File.Create(path)))
-            {
-                bw.Write((byte)Opcode.KeyLength);
-                bw.Write(provider.ExportKeyLenght());
-
-                if (Convert.ToBoolean(saveInfoFlag & DataTypeFlag.PublicKey))
-                {
-                    using (var key = provider.ExportKey(false))
-                    {
-                        var keyBuffer = key.GetBuffer();
-                        bw.Write((byte)Opcode.PublicKey);
-                        bw.Write(keyBuffer.Length);
-                        bw.Write(keyBuffer);
-                    }
-                }
-
-                if (Convert.ToBoolean(saveInfoFlag & DataTypeFlag.PrivateKey))
-                {
-                    using (var key = provider.ExportKey(true))
-                    {
-                        var keyBuffer = key.GetBuffer();
-                        bw.Write((byte)Opcode.PrivateKey);
-                        bw.Write(keyBuffer.Length);
-                        bw.Write(keyBuffer);
-                    }
-                }
-            }
-        }
-
         private static (int, byte[], byte[]) ReadKeyData(RSACrypt provider, string path, DataTypeFlag saveTypeFlag)
         {
             int? keyLenght = null;
@@ -136,6 +105,43 @@ namespace RSACryptor
                 throw new Exception("Key lenght fault");
 
             return (keyLenght.Value, publicKey, privateKey);
+        }
+
+
+
+
+
+
+
+        private static void SaveKeyData(RSACrypt provider, string saveKeyDataPath, DataTypeFlag saveInfoFlag)
+        {
+            using (var bw = new BinaryWriter(File.Create(saveKeyDataPath)))
+            {
+                bw.Write((byte)Opcode.KeyLength);
+                bw.Write(provider.ExportKeyLenght());
+
+                if (Convert.ToBoolean(saveInfoFlag & DataTypeFlag.PublicKey))
+                {
+                    using (var key = provider.ExportKey(false))
+                    {
+                        var keyBuffer = key.GetBuffer();
+                        bw.Write((byte)Opcode.PublicKey);
+                        bw.Write(keyBuffer.Length);
+                        bw.Write(keyBuffer);
+                    }
+                }
+
+                if (Convert.ToBoolean(saveInfoFlag & DataTypeFlag.PrivateKey))
+                {
+                    using (var key = provider.ExportKey(true))
+                    {
+                        var keyBuffer = key.GetBuffer();
+                        bw.Write((byte)Opcode.PrivateKey);
+                        bw.Write(keyBuffer.Length);
+                        bw.Write(keyBuffer);
+                    }
+                }
+            }
         }
     }
 }
