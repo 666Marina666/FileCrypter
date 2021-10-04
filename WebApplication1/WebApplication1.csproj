@@ -24,4 +24,8 @@
     <Folder Include="Files\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RSACryptor\RSACryptor.csproj" />
+  </ItemGroup>
+
 </Project>
