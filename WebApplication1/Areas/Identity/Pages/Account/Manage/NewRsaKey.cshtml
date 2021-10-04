@@ -1,0 +1,44 @@
+﻿@page
+@model NewRsaKey
+@{
+    //ViewData["Title"] = "Generate new Rsa key";
+    ViewData["ActivePage"] = ManageNavPages.NewRsaKey;
+}
+<h3>Generate new RSA Key</h3>
+<form method="post" enctype="multipart/form-data">
+    <button type="submit" class="btn btn-primary" asp-controller="RsaParameters" asp-action="GetNewRsaParameters">Generate RSA Key</button>
+    <button type="submit" class="btn btn-primary" asp-controller="RsaParameters" asp-action="GetOpenKey">Get Open Key</button>
+    <button type="submit" class="btn btn-primary" asp-controller="RsaParameters" asp-action="GetPrivateKey">Get Private Key</button>
+</form>
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="change-password-form" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.PublicKey"></label>
+                <input asp-for="Input.PublicKey" class="form-control" />
+                <span asp-validation-for="Input.PublicKey" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.PrivateKey"></label>
+                <input asp-for="Input.PrivateKey" class="form-control" />
+                <span asp-validation-for="Input.PrivateKey" class="text-danger"></span>
+            </div>
+
+            @*<form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group">
+                    <button class="btn btn-primary" type="submit">Download</button>
+                </form>
+                <p>
+                    <a id="delete" asp-page="DeletePersonalData" class="btn btn-secondary">Delete</a>
+                </p>*@
+
+            <button type="submit" class="btn btn-primary">Add key pair</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

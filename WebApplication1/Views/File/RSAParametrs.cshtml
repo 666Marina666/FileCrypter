@@ -1,0 +1,74 @@
+﻿@model RsaViewModel
+@{ ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+
+<h4>Start Encrypting Files Here</h4>
+<hr />
+@if (ViewBag.Message != null)
+{
+<div class="alert alert-success alert-dismissible" style="margin-top:20px">
+    @ViewBag.Message
+</div>}
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="files" multiple required />
+
+    <input type="text" autocomplete="off" placeholder="Enter File Description" name="description" required />
+    <select>
+        <option>Choose key</option>
+        <option>Public key 1</option>
+    </select>
+    
+
+    <button type="submit" class="btn btn-primary" asp-controller="File" asp-action="EncryptBytes">Encrypt</button>
+    <button type="submit" class="btn btn-primary" asp-controller="File" asp-action="UploadToFileSystem">Upload to File System</button>
+    <button class="btn btn-success" type="submit" asp-controller="File" asp-action="UploadToDatabase">Upload to Database</button>
+</form>
+<hr />
+
+<h4>Start Decrypting Files Here</h4>
+<hr />
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:20px">
+        @ViewBag.Message
+    </div>}
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="files" multiple required />
+
+    <input type="text" autocomplete="off" placeholder="Enter File Description" name="description" required />
+    <select>
+        <option>Choose key</option>
+        <option>Private key</option>
+    </select>
+    <button type="submit" class="btn btn-primary" asp-controller="File" asp-action="DecryptBytes">Decrypt</button>
+    <button type="submit" class="btn btn-primary" asp-controller="File" asp-action="UploadToFileSystem">Upload to File System</button>
+    <button class="btn btn-success" type="submit" asp-controller="File" asp-action="UploadToDatabase">Upload to Database</button>
+</form>
+<hr />
+
+<caption>List of Files on File System</caption>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>File Type</th>
+            <th>Created On</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    
+
+    <tr>
+        <th>@Model.Id</th>
+        <td>@Model.Name</td>
+        <td>@Model.Description</td>
+        <td>@Model.FileType</td>
+        <td>@Model.CreatedOn</td>
+
+
+    </tbody>
+</table>
