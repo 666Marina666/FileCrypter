@@ -1,20 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using RSACryptor;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using System.Threading.Tasks;
 using WebApplication1.Models;
+using WebApplication1.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using WebApplication1.Models.RSA;
 using WebApplication1.Models.File;
 using System.Security.Cryptography;
-using WebApplication1.Helpers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using System.Runtime.InteropServices.ComTypes;
-using RSACryptor;
-using WebApplication1.Models.RSA;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 
 namespace WebApplication1.Controllers
@@ -26,6 +28,16 @@ namespace WebApplication1.Controllers
         //public object DataProtectionScope { get; private set; }
         //public object ProtectedData { get; private set; }
 
+
+        public IEnumerable<string> companies = new List<string>
+        {
+            "{1451D3BE-B302-4023-9A15-8CB18EFFA121}",
+            "{A8B0A97C-7EC9-4146-97DA-2B801813FBBA}",
+            "{D29C53AD-679D-452F-87B9-0DCF16657940}",
+            "{835DBC2C-671D-4DF1-B5CD-FB19E67E9260}"
+        };
+
+
         public FileController(AppDbContext context)
         {
             this.context = context;
@@ -35,8 +47,10 @@ namespace WebApplication1.Controllers
 
         public async Task<IActionResult> Index()
         {
+
             var fileuploadViewModel = await LoadAllFiles();
             ViewBag.Message = TempData["Message"];
+            ViewBag.Compaties = companies;
             return View(fileuploadViewModel);
         }
 

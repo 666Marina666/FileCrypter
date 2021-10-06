@@ -15,6 +15,16 @@
 
     <input type="text" autocomplete="off" placeholder="Enter File Description" name="description" required />
     <input type="text" autocomplete="off" placeholder="Enter RSA key" name="rsaKey" required />
+    @*<select asp-for="company" asp-items="ViewBag.Companies" />*@
+
+    <select>
+        <option>AnotherTestKey</option>
+        <option>Test</option>
+        <option>TestKey</option>
+        <option>TestKey1</option>
+        <option>TestKey2</option>
+    </select>
+
     <button type="submit" class="btn btn-primary" asp-controller="File" asp-action="UploadToFileSystem">Upload to File System</button>
     <button class="btn btn-success" type="submit" asp-controller="File" asp-action="UploadToDatabase">Upload to Database</button>
 </form>

@@ -8,5 +8,10 @@ namespace WebApplication1.Models.File
         public List<FileOnDatabaseModel> FilesOnDatabase { get; set; }
         public List<FileOnFileSystemModel> FilesToEnrcrypt { get; set; }
         public List<FileOnFileSystemModel> FilesOnFileSystem { get; set; }
+
+
+
+
+        public string company { get; set; }
     }
 }
