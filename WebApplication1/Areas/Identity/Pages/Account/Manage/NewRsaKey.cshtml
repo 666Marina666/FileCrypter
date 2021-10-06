@@ -7,8 +7,8 @@
 <h3>Generate new RSA Key</h3>
 <form method="post" enctype="multipart/form-data">
     <button type="submit" class="btn btn-primary" asp-controller="RsaParameters" asp-action="GetNewRsaParameters">Generate RSA Key</button>
-    <button type="submit" class="btn btn-primary" asp-controller="RsaParameters" asp-action="GetOpenKey">Get Open Key</button>
-    <button type="submit" class="btn btn-primary" asp-controller="RsaParameters" asp-action="GetPrivateKey">Get Private Key</button>
+    @*<button type="submit" class="btn btn-primary" asp-controller="RsaParameters" asp-action="GetOpenKey">Get Open Key</button>
+    <button type="submit" class="btn btn-primary" asp-controller="RsaParameters" asp-action="GetPrivateKey">Get Private Key</button>*@
 </form>
 <h4>@ViewData["Title"]</h4>
 <partial name="_StatusMessage" for="StatusMessage" />

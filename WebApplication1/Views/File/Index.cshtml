@@ -14,7 +14,7 @@
     <input type="file" name="files" multiple required />
 
     <input type="text" autocomplete="off" placeholder="Enter File Description" name="description" required />
-    <input type="text" autocomplete="off" placeholder="Enter RSA key" name="rsaKey" required />
+    @*<input type="text" autocomplete="off" placeholder="Enter RSA key" name="rsaKey" required />*@
     @*<select asp-for="company" asp-items="ViewBag.Companies" />*@
 
     <select>
@@ -81,7 +81,7 @@
                             <th>Description</th>
                             <th>File Type</th>
                             <th>Created On</th>
-                            <th>RSAKey</th>
+                            @*<th>RSAKey</th>*@
                             <th>Actions</th>
 
 
@@ -96,7 +96,7 @@
             <td>@file.Description</td>
             <td>@file.FileType</td>
             <td>@file.CreatedOn</td>
-            <td>@file.RsaPublicKey</td>
+            @*<td>@file.RsaPublicKey</td>*@
             <td>
                 <a type="button" class="btn btn-primary" asp-controller="File" asp-action="DownloadFileFromDatabase" asp-route-id="@file.Id">Download</a>
                 <a type="button" class="btn btn-danger" asp-controller="File" asp-action="DeleteFileFromDatabase" asp-route-id="@file.Id">Delete</a>
