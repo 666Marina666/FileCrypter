@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApplication1.Controllers;
+using WebApplication1.Services;
+using WebApplication1.Services.Implemetations;
 
 namespace WebApplication1
 {
@@ -26,8 +28,9 @@ namespace WebApplication1
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddScoped<RsaParametersController>();
-            
+            services.AddScoped<IFileService,FileService>();
+            services.AddScoped<IKeyServices, KeyServices>();
+
             services.AddControllersWithViews();
 
         }

@@ -5,11 +5,11 @@ namespace WebApplication1.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public ICollection<RsaParameters> RsaParameters { get; set; }
+        public ICollection<RsaKeyPair> RsaParameters { get; set; }
 
         public ApplicationUser()
         {
-            RsaParameters = new List<RsaParameters>();
+            RsaParameters = new List<RsaKeyPair>();
         }
     }
 }

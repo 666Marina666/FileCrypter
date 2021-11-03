@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using WebApplication1.Controllers;
 using WebApplication1.Models;
+using WebApplication1.Services;
+using WebApplication1.Services.Implemetations;
 
 namespace WebApplication1.Areas.Identity.Pages.Account.Manage
 {
@@ -15,17 +17,18 @@ namespace WebApplication1.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
-        private readonly RsaParametersController _rsaParametersManager;
+        private readonly IKeyServices _keyServices;
         
 
         public NewRsaKey(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<ChangePasswordModel> logger, RsaParametersController rsaParametersManager)
+            ILogger<ChangePasswordModel> logger, 
+            IKeyServices keyServices)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _rsaParametersManager = rsaParametersManager;
+            _keyServices = keyServices;
             _logger = logger;
         }
 
@@ -40,12 +43,7 @@ namespace WebApplication1.Areas.Identity.Pages.Account.Manage
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "Public key")]
-            public string PublicKey { get; set; }
-
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "Private key")]
-            public string PrivateKey { get; set; }
+            public string KeyPairName { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -69,14 +67,11 @@ namespace WebApplication1.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            user.RsaParameters.Add(new RsaParameters()
-            {
-                PrivateKey = Input.PrivateKey,
-                PublicKey = Input.PublicKey
-            });
+            var userName = HttpContext.User.Identity.Name;
+            var newKey = _keyServices.Create(userName, Input.KeyPairName);
 
-            _logger.LogInformation("User changed added rsa key pair to collection.");
-            StatusMessage = "New key pair has added.";
+            _logger.LogInformation("User add rsa key pair to collection.");
+            StatusMessage = $"New key {newKey.PairName} pair has added.";
 
             return RedirectToPage();
         }

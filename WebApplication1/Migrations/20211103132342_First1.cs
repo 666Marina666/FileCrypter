@@ -153,19 +153,40 @@ namespace WebApplication1.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RsaKeyPairs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PairName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublicKey = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    PrivateKey = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    CreatorId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RsaKeyPairs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RsaKeyPairs_AspNetUsers_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FilesOnDatabase",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    PublicKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     FileType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Extension = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RsaPublicKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    KeyPairId = table.Column<int>(type: "int", nullable: true),
                     UploadedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -177,50 +198,10 @@ namespace WebApplication1.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FilesOnFileSystem",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PublicKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FileType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Extension = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RsaPublicKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UploadedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FilesOnFileSystem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FilesOnFileSystem_AspNetUsers_UploadedById",
-                        column: x => x.UploadedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RsaParameters",
-                columns: table => new
-                {
-                    PublicKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PrivateKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RsaParameters", x => x.PublicKey);
-                    table.ForeignKey(
-                        name: "FK_RsaParameters_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_FilesOnDatabase_RsaKeyPairs_KeyPairId",
+                        column: x => x.KeyPairId,
+                        principalTable: "RsaKeyPairs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -265,19 +246,19 @@ namespace WebApplication1.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FilesOnDatabase_KeyPairId",
+                table: "FilesOnDatabase",
+                column: "KeyPairId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FilesOnDatabase_UploadedById",
                 table: "FilesOnDatabase",
                 column: "UploadedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FilesOnFileSystem_UploadedById",
-                table: "FilesOnFileSystem",
-                column: "UploadedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RsaParameters_ApplicationUserId",
-                table: "RsaParameters",
-                column: "ApplicationUserId");
+                name: "IX_RsaKeyPairs_CreatorId",
+                table: "RsaKeyPairs",
+                column: "CreatorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -301,13 +282,10 @@ namespace WebApplication1.Migrations
                 name: "FilesOnDatabase");
 
             migrationBuilder.DropTable(
-                name: "FilesOnFileSystem");
-
-            migrationBuilder.DropTable(
-                name: "RsaParameters");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "RsaKeyPairs");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

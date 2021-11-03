@@ -14,7 +14,7 @@ namespace WebApplication1.Areas.Identity
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<Data.AppDbContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("ApplicationDbContextConnection")));
+                        context.Configuration.GetConnectionString("DefaultConnection")));
 
                 services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<Data.AppDbContext>();

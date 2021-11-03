@@ -10,8 +10,8 @@ using WebApplication1.Data;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210925144453_second1")]
-    partial class second1
+    [Migration("20211103132342_First1")]
+    partial class First1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,21 +20,6 @@ namespace WebApplication1.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("ApplicationUserRsaParameters", b =>
-                {
-                    b.Property<string>("OwnerUsersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RsaParametersPublicKey")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("OwnerUsersId", "RsaParametersPublicKey");
-
-                    b.HasIndex("RsaParametersPublicKey");
-
-                    b.ToTable("ApplicationUserRsaParameters");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -258,95 +243,48 @@ namespace WebApplication1.Migrations
                     b.Property<string>("FileType")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("KeyPairId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PublicKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RsaPublicKey")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UploadedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("KeyPairId");
 
                     b.HasIndex("UploadedById");
 
                     b.ToTable("FilesOnDatabase");
                 });
 
-            modelBuilder.Entity("WebApplication1.Models.File.FileOnFileSystemModel", b =>
+            modelBuilder.Entity("WebApplication1.Models.RsaKeyPair", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Extension")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PublicKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RsaPublicKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UploadedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UploadedById");
-
-                    b.ToTable("FilesOnFileSystem");
-                });
-
-            modelBuilder.Entity("WebApplication1.Models.RsaParameters", b =>
-                {
-                    b.Property<string>("PublicKey")
+                    b.Property<string>("CreatorId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PairName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PrivateKey")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("PrivateKey")
+                        .HasColumnType("varbinary(max)");
 
-                    b.HasKey("PublicKey");
+                    b.Property<byte[]>("KeyPairName")
+                        .HasColumnType("varbinary(max)");
 
-                    b.ToTable("RsaParameters");
-                });
+                    b.HasKey("Id");
 
-            modelBuilder.Entity("ApplicationUserRsaParameters", b =>
-                {
-                    b.HasOne("WebApplication1.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("OwnerUsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasIndex("CreatorId");
 
-                    b.HasOne("WebApplication1.Models.RsaParameters", null)
-                        .WithMany()
-                        .HasForeignKey("RsaParametersPublicKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.ToTable("RsaKeyPairs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -402,20 +340,31 @@ namespace WebApplication1.Migrations
 
             modelBuilder.Entity("WebApplication1.Models.File.FileOnDatabaseModel", b =>
                 {
+                    b.HasOne("WebApplication1.Models.RsaKeyPair", "KeyPair")
+                        .WithMany()
+                        .HasForeignKey("KeyPairId");
+
                     b.HasOne("WebApplication1.Models.ApplicationUser", "UploadedBy")
                         .WithMany()
                         .HasForeignKey("UploadedById");
+
+                    b.Navigation("KeyPair");
 
                     b.Navigation("UploadedBy");
                 });
 
-            modelBuilder.Entity("WebApplication1.Models.File.FileOnFileSystemModel", b =>
+            modelBuilder.Entity("WebApplication1.Models.RsaKeyPair", b =>
                 {
-                    b.HasOne("WebApplication1.Models.ApplicationUser", "UploadedBy")
-                        .WithMany()
-                        .HasForeignKey("UploadedById");
+                    b.HasOne("WebApplication1.Models.ApplicationUser", "Creator")
+                        .WithMany("RsaParameters")
+                        .HasForeignKey("CreatorId");
 
-                    b.Navigation("UploadedBy");
+                    b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("RsaParameters");
                 });
 #pragma warning restore 612, 618
         }
